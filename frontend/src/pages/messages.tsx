@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { useSessionStorage } from "react-use";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
 import { pusher } from "../services/pusher";
+import useUserId from "../hooks/use-user-id";
 
 interface Message {
   userId: string;
@@ -18,7 +18,7 @@ export function Component() {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
-  const [userId] = useSessionStorage("userId");
+  const [userId, setUserId] = useUserId();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(event.target.value);
@@ -29,7 +29,7 @@ export function Component() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/messages", {
+      await fetch("/api/messages", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -39,14 +39,17 @@ export function Component() {
           userId,
         }),
       });
-      const json = await response.json();
-      console.log(json);
       setIsLoading(false);
-      setMessage('');
+      setMessage("");
     } catch (error) {
       setIsLoading(false);
       console.error(error);
     }
+  };
+
+  const handleLogout = () => {
+    setUserId("");
+    window.location.href = "/auth";
   };
 
   useEffect(() => {
@@ -79,13 +82,18 @@ export function Component() {
             shrink: true,
           }}
         />
-        <Button
-          variant="contained"
-          type="submit"
-          disabled={message.length === 0 || isLoading}
-        >
-          Submit
-        </Button>
+        <Stack direction="row" gap={2}>
+          <Button
+            variant="contained"
+            type="submit"
+            disabled={message.length === 0 || isLoading}
+          >
+            Submit
+          </Button>
+          <Button variant="contained" onClick={handleLogout}>
+            Logout
+          </Button>
+        </Stack>
       </Stack>
     </Stack>
   );

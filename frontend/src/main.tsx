@@ -14,11 +14,8 @@ window.navigator.serviceWorker.ready.then(async (serviceWorkerRegistration) => {
     
     await client.start();
 
-    // const currentUserId = sessionStorage.getItem("userId");
-    // const userId = await client.getUserId();
-    // if (userId !== currentUserId) {
-    //   return client.stop();
-    // }
+    const currentUserId = localStorage.getItem("userId");
+    console.log('currentUserId: ', currentUserId);
 
     await client.addDeviceInterest(deviceInterest);
   } catch (error) {

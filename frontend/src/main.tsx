@@ -1,9 +1,34 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
+import { RouterProvider } from "react-router-dom";
+import CssBaseline from "@mui/material/CssBaseline";
+
+import { deviceInterest, beamsClient } from "./services/pusher.ts";
+import router from "./router";
+
+
+window.navigator.serviceWorker.ready.then(async (serviceWorkerRegistration) => {
+  try {
+    
+    const client = beamsClient(serviceWorkerRegistration);
+    
+    await client.start();
+
+    // const currentUserId = sessionStorage.getItem("userId");
+    // const userId = await client.getUserId();
+    // if (userId !== currentUserId) {
+    //   return client.stop();
+    // }
+
+    await client.addDeviceInterest(deviceInterest);
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
+    <CssBaseline />
+    <RouterProvider router={router} />
   </React.StrictMode>
 );

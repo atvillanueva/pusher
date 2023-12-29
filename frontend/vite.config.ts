@@ -7,8 +7,16 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      manifest: {},
-      injectRegister: "auto",
+      injectRegister: 'inline',
+      workbox: {
+        importScripts: ["https://js.pusher.com/beams/service-worker.js"],
+      },
     }),
   ],
+  server: {
+    host: true,
+    proxy: {
+      '/api/': 'http://localhost:3001/',
+    },
+  },
 });

@@ -26,8 +26,9 @@ export function Component() {
       const client = beamsClient(serviceWorkerRegistration);
 
       await client.start();
-      await client.setUserId(userId, beamsTokenProvider);
-      await client.addDeviceInterest(deviceInterest);
+
+      // await client.setUserId(userId, beamsTokenProvider);
+      // await client.addDeviceInterest(deviceInterest);
 
       navigate("/messages");
     } catch (error) {
